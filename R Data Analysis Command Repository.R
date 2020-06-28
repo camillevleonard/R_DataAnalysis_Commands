@@ -145,6 +145,9 @@ contrasts(Region)
 #check the names of the classes in the categorical variable 
 levels(Region)
 
+#change reference variable
+relevel() # enter ?relevel in console to see details of function / inputs
+
 ##Give names to the classes
 levels(Region) <- c("North", "Central", "Napa") 
 contrasts(Region)#check coding scheme for sequence of of names
