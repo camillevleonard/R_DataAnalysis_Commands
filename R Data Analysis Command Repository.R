@@ -1,6 +1,8 @@
 #Data Analysis Command Respository 
 #commands and their uses have been sourced from Dr. Woo's STAT 6021 class offered by the DSI at UVA
 
+#any functions can be searched in the console by "?functionname" to read documentation
+
 #read in data from already installed package
 #data <- nameOfPackage #no additional syntax needed, just the name of the dataset
 
@@ -210,3 +212,43 @@ summary(pairwise)
 ##obtain the variance-covariance matrix of the coefficients
 reduced$coef
 vcov(reduced)
+
+######################################################################################################
+#Model Selection - All possible regression, forward selection, backwards selection, stepwise selection
+#the functions shown below are sourced from the leaps library
+#calc based on the nfl.txt dataset with 9 possible predictors
+
+allreg<-regsubsets(y~.,data=data, nbest=9) #performs all possible regressions, nbest sets at most how many predictors to consider for the model per run (lim to 10)
+
+#the above output can be difficult to read / interpret the below code reorganizes it into a data frame
+##create a "data frame" that stores the predictors in the various models considered as well as their various criteria
+best <- as.data.frame(summary(allreg)$outmat)
+best$p <- as.numeric(substr(rownames(best),1,1))+1 #p value
+best$r2 <- summary(allreg)$rsq #r squared 
+best$adjr2 <- summary(allreg)$adjr2 #r squared adjusted
+best$mse <- (summary(allreg)$rss)/(dim(data)[1]-best$p) #mean square error
+best$cp <- summary(allreg)$cp #Mallow's Cp
+best$bic <- summary(allreg)$bic #BIC (Schwartz)
+best #take a look at the new data frame
+
+##sort by various criteria
+best[order(best$r2),] #will sort smallest to largest, want largest value 
+best[order(best$adjr2),] #want largest value
+best[order(best$mse),] #want smallest 
+best[order(best$cp),] #want smallest
+best[order(best$bic),] #want smallest
+
+##intercept only model
+regnull <- lm(y~1, data=data)
+##model with all predictors
+regfull <- lm(y~., data=data)
+
+##forward selection, backward elimination, and stepwise regression
+#you will get different results for each method and if you change what model you begin with
+#start with inercept only model as lower bound and full model as upper bound
+#forward builds from intercept only by adding predictors to model
+step(regnull, scope=list(lower=regnull, upper=regfull), direction="forward")
+#backward starts with full model and removes predictors 
+step(regfull, scope=list(lower=regnull, upper=regfull), direction="backward")
+#stepwise starts with intercept model, adds predictors, then reevaluates predictors for redundancy as the model is expanded 
+step(regnull, scope=list(lower=regnull, upper=regfull), direction="both")
