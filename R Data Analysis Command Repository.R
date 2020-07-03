@@ -252,3 +252,22 @@ step(regnull, scope=list(lower=regnull, upper=regfull), direction="forward")
 step(regfull, scope=list(lower=regnull, upper=regfull), direction="backward")
 #stepwise starts with intercept model, adds predictors, then reevaluates predictors for redundancy as the model is expanded 
 step(regnull, scope=list(lower=regnull, upper=regfull), direction="both")
+
+#write a PRESS statistic function 
+PRESS <- function(linear.model) {
+  ## get the residuals from the linear.model. extract hat from lm.influence to obtain the leverages
+  pr <- residuals(linear.model)/(1-lm.influence(linear.model)$hat)
+  ## calculate the PRESS by squaring each term and adding them up
+  PRESS <- sum(pr^2)
+  
+  return(PRESS)
+}
+
+##Find SST
+SST<-sum(anova_result$"Sum Sq")
+
+#calc Rsq_pred from PRESS stat
+Rsq_pred<-1-PRESS(result)/SST
+
+##data selection - randomly split the data into two parts
+halfout <- data[sample(nrow(data), (nrow(data)/2)), ]
