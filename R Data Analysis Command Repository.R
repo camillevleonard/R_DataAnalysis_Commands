@@ -105,7 +105,7 @@ library(MASS)
 boxcox(result.inv)
 boxcox(result.inv, lambda = seq(0.6, 1.6, 0.01)) #you can adjust the range and interval of the boxcox graph
 
-#create scatterplot of all predictors
+#create scatterplot of all predictors, can't use with categorical predictors 
 pairs(data, lower.panel = NULL, main="Scatterplot of Quantitative Variables")
 
 #check for pairwise correlations to investigate multicollinearity 
