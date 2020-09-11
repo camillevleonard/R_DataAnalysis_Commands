@@ -271,3 +271,14 @@ Rsq_pred<-1-PRESS(result)/SST
 
 ##data selection - randomly split the data into two parts
 halfout <- data[sample(nrow(data), (nrow(data)/2)), ]
+
+######################################################################################################
+# For R versions 3.6.0 and later, you are able to specify if you want to use the "Rejection" sampler or the old "Rounding" sampler.
+# 
+# Type RNGkind(sample.kind = "Rejection") or RNGkind(sample.kind = "Rounding") for needed sampler (type this on a line before using the set.seed() function).
+# 
+# You should use the rejection sampler. The rounding sampler should be used only if you want to reproduce results that used R versions before 3.6.0.
+# 
+# Based on the documentation, the rejection sampler should be the default for versions 3.6.0 and later. However, based on a survey in a previous semester, about one-third of students who used version 3.6.0 or later reported having the rounding sampler as the default, but were all able to use the RNGkind() function to switch to the rejection sampler.
+# 
+# If you use R versions before 3.6.0, I advise you to update.
